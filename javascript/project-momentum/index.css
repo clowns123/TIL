@@ -1,5 +1,6 @@
 body{
-    background-color: #ecf0f1;
+    background-image: url("./test.jpg");
+    color: aliceblue;
 }
 
 h1{

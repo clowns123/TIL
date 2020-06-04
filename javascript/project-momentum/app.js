@@ -42,7 +42,6 @@ function addTodo(e) {
     complete: false,
   };
   todos = [tempTodo, ...todos];
-
   e.target.value = '';
   render();
 }
