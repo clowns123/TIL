@@ -1,16 +1,18 @@
 // DOMs
 const layoutGreetings = document.getElementById('layout-greetings');
-const timeIs = layoutGreetings.querySelector('.time-is');
-const userName = document.getElementById('user-name');
+const timeIs = layoutGreetings.querySelector('.greetings-time');
+const greetingsUserIs = layoutGreetings.querySelector('.greetings-userIs');
+const userName = layoutGreetings.querySelector('.user-name');
+const userIs = layoutGreetings.querySelector('.userIs')
+
+// val
+let user = {name : '',};
+const USER_LS = 'user';
 // function
 // greeting time
-const getTime = () => {
-  let clock = new Date();
-  return clock.getHours();
-};
-
 const greetingTimeIs = () => {
-  let time = getTime();
+  const date = new Date();
+  const time = date.getHours();
   let greetingText = '';
   if (time >= 7 && time <= 12) {
     greetingText = 'morning';
@@ -26,31 +28,41 @@ const paintGreeting = () => {
   timeIs.textContent = `${greetingTimeIs()}`;
 };
 // end
-// loadName
-const paintName = (name) => {};
-const loadName = () => {
-  const name = localStorage.getItem('name');
-  if (name === null) return;
-  paintName(name.text);
-};
 
-// saveInput
-const saveName = (value) => {
-  const name = { name: value };
-  console.log(JSON.stringify(name));
+// paintingUser
+const userPaint = (name) =>{
+  greetingsUserIs.classList.remove('showing')
+  userName.classList.add('showing')
+  userIs.textContent = name
+  
+}
 
-  localStorage.setItem('name', JSON.stringify(name));
-};
+function saveName(name) {
+  user.name = name;
+  localStorage.setItem(USER_LS, JSON.stringify(user));
+}
 
-// Event
-// Input
-userName.onkeypress = (e) => {
-  if (e.keyCode !== 13) return;
-  saveName(e.target.value);
-};
+const askUser = () =>{  
+  userName.onkeypress = (e) =>{
+    if(e.keyCode !== 13) return
+    saveName(e.target.value)
+    userPaint(e.target.value);
+  }
+}
+const loadUser = () => {
+  const currentUser = localStorage.getItem(USER_LS);
+  if(currentUser === '' || currentUser === null){
+    // user is not
+    askUser();
+  } else{
+    // user is
+    userPaint(JSON.parse(currentUser).name);
+  }
+  
+}
 
 // eslint-disable-next-line import/prefer-default-export
 export function init() {
   paintGreeting();
-  loadName();
+  loadUser();
 }
