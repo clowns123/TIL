@@ -38,4 +38,25 @@ footer {
 #layout-todoList {
   text-align: right;
   width: 15%;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.model{
+    background:rgba(0, 0, 0, 0.8);
+    width: 200px;
+    height: 200px;
+    position: absolute;
+    right: 0%;
+    bottom: 0%;
+}
+.model-overlay{
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
 }

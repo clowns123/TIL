@@ -3,10 +3,10 @@ const layoutGreetings = document.getElementById('layout-greetings');
 const timeIs = layoutGreetings.querySelector('.greetings-time');
 const greetingsUserIs = layoutGreetings.querySelector('.greetings-userIs');
 const userName = layoutGreetings.querySelector('.user-name');
-const userIs = layoutGreetings.querySelector('.userIs')
+const userIs = layoutGreetings.querySelector('.userIs');
 
 // val
-let user = {name : '',};
+let user = { name: '' };
 const USER_LS = 'user';
 // function
 // greeting time
@@ -30,36 +30,42 @@ const paintGreeting = () => {
 // end
 
 // paintingUser
-const userPaint = (name) =>{
-  greetingsUserIs.classList.remove('showing')
-  userName.classList.add('showing')
-  userIs.textContent = name
-  
-}
+const userPaint = (name) => {
+  greetingsUserIs.classList.remove('showing');
+  userName.classList.add('showing');
+  userIs.textContent = name;
+  // event
+  greetingsUserIs.querySelector('i').onclick = (e) => {
+    saveName('');
+    loadUser();
+  };
+};
 
 function saveName(name) {
   user.name = name;
   localStorage.setItem(USER_LS, JSON.stringify(user));
 }
 
-const askUser = () =>{  
-  userName.onkeypress = (e) =>{
-    if(e.keyCode !== 13) return
-    saveName(e.target.value)
+const askUser = () => {
+  greetingsUserIs.classList.add('showing');
+  userName.classList.remove('showing');
+  userName.onkeypress = (e) => {
+    if (e.keyCode !== 13) return;
+    saveName(e.target.value);
     userPaint(e.target.value);
-  }
-}
+    userName.value = '';
+  };
+};
 const loadUser = () => {
   const currentUser = localStorage.getItem(USER_LS);
-  if(currentUser === '' || currentUser === null){
+  if (JSON.parse(currentUser).name === '' || currentUser === null) {
     // user is not
     askUser();
-  } else{
+  } else {
     // user is
     userPaint(JSON.parse(currentUser).name);
   }
-  
-}
+};
 
 // eslint-disable-next-line import/prefer-default-export
 export function init() {
