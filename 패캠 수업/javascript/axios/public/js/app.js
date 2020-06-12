@@ -1,6 +1,3 @@
-import { ajax, promiseAll } from './ajax.js';
-import { ajax as ajaxStudy } from './xhr.js';
-
 // DOMs
 const $todos = document.querySelector('.todos');
 const $nav = document.querySelector('.nav');
@@ -19,21 +16,16 @@ let navState = $nav.querySelector('.active').id;
 
 // test Todos
 const getTodos = () => {
-  // promiseAll('GET', '/todos').then(function (_todos) {
-  //   todos = _todos;
-  //   render();
-  // });
-  // ajax.get('/todos', function (_todos) {
-  //   todos = _todos
-  //   todos = todos.sort((todo1, todo2) => todo2.id - todo1.id)
-  //   render()
-  // })
-  ajaxStudy
-    .get('/todos')
-    .then((_todos) => (todos = _todos))
-    .then((a) => console.log(a))
-    .then(render)
-    .catch((err) => console.log(err));
+  async function getUser() {
+    try {
+      const res = await axios.get('http://localhost:9000/todos');
+      todos = res.data;
+      render();
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  getUser();
 };
 // Event Function
 const getTodoId = () =>
@@ -41,70 +33,66 @@ const getTodoId = () =>
 
 const addTodo = (text) => {
   let todo = { id: getTodoId(), content: text, completed: false };
-  // ajax.post('./todos', todo, function (_todos) {
-  //   todos = _todos
-  //   render()
-  // })
-  // promiseAll('POST', './todos', todo).then(function (_todos) {
-  //   todos = _todos;
-  //   render();
-  // });
-  ajaxStudy
-    .POST('/todos', todo)
-    .then((_todos) => (todos = _todos))
-    .then(render)
-    .catch((err) => console.log(err));
+  async function addUser() {
+    try {
+      const res = await axios.post('http://localhost:9000/todos', todo);
+      todos = res.data;
+      render();
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  addUser();
 };
 const toggleTodo = (id) => {
   let completed = !todos.find((todo) => todo.id === +id).completed;
-  // ajax.patch(`todos/${id}`, { completed }, function (_todos) {
-  //   todos = _todos
-  //   render()
-  // })
 
-  // promiseAll('PATCH', `./todos/${id}`).then(function (_todos) {
-  //   todos = _todos;
-  //   render();
-  // });
-  ajaxStudy
-    .patch(`./todos/${id}`, { completed })
-    .then((_todos) => (todos = _todos))
-    .then(render)
-    .catch((err) => console.log(err));
+  async function toggleUser() {
+    try {
+      const res = await axios.patch(`http://localhost:9000/todos/${id}`, {
+        completed,
+      });
+      todos = res.data;
+
+      render();
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  toggleUser();
+  console.log(todos);
 };
 
 const delTodo = (id) => {
-  // ajax.delete(`./todos/${id}`, function (_todos) {
-  //   todos = _todos
-  //   render()
-  // })
-
-  // promiseAll('DELETE', `todos/${id}`).then(function (_todos) {
-  //   todos = _todos;
-  //   render();
-  // });
-  ajaxStudy
-    .delete(`./todos/${id}`)
-    .then((_todos) => (todos = _todos))
-    .then(render)
-    .catch((err) => console.log(err));
+  async function delUser() {
+    try {
+      const res = await axios.delete(`http://localhost:9000/todos/${id}`);
+      todos = res.data;
+      render();
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  delUser();
 };
 
 const toggleAllTodo = (checked) => {
   let completed = checked;
-  // ajax.patch(`./todos`, { completed }, function (_todos) {
-  //   todos = _todos
-  //   render()
-  // })
-  // promiseAll('PATCH', '/todos', { completed }).then(function (_todos) {
-  //   todos = _todos;
-  //   render();
-  // });
-  ajaxStudy
-    .patch(`./todos`, { completed })
-    .then((_todos) => (todos = _todos))
-    .then(render)
-    .catch((err) => console.log(err));
+
+  async function toggleAllUser() {
+    try {
+      const res = await axios.patch(`http://localhost:9000/todos`, {
+        completed,
+      });
+      todos = res.data;
+
+      render();
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  toggleAllUser();
 };
 const completedDelTodos = () => {
   // ajax.delete('todos/completed', function (_todos) {
@@ -115,11 +103,22 @@ const completedDelTodos = () => {
   //   todos = _todos;
   //   render();
   // });
-  ajaxStudy
-    .delete(`./todos/completed`)
-    .then((_todos) => (todos = _todos))
-    .then(render)
-    .catch((err) => console.log(err));
+  // ajaxStudy
+  //   .delete(`./todos/completed`)
+  //   .then((_todos) => (todos = _todos))
+  //   .then(render)
+  //   .catch((err) => console.log(err));
+
+  async function delAllUser() {
+    try {
+      const res = await axios.get(`http://localhost:9000/todos/completed`);
+      todos = res.data;
+      render();
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  delAllUser();
 };
 
 // render
