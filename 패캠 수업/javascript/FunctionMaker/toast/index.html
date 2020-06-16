@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Toast UI</title>
+  <style>
+  @import url(https://fonts.googleapis.com/css?family=Open+Sans:300,400);
+
+  body {
+    font-family: 'Open Sans';
+    font-weight: 300;
+    background-color: #D6E1E5;
+  }
+
+  h1 {
+    color: #DB5B33;
+    font-weight: 300;
+    text-align: center;
+  }
+  .toast-container{
+    width: 35vw;
+    height: 90px;
+    background-color: aqua;
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    padding: 20px;
+  }
+  .toast-container button{
+    border: 0;
+    background-color: rgba(0, 0, 0, 0);
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+  .toast-container h2{
+    padding: 0 0 20px 0;
+    margin: 0;
+    text-align: start;
+  }
+  .toast-container p{
+    text-align: start;
+    font-size: 1.4rem;
+    padding: 0;
+    margin: 0;
+  }
+  
+  /* CSS 작성 바랍니다. */
+  </style>
+</head>
+<body>
+  <h1>JavaScript Toast</h1>
+
+  <button class="show-success">Success</button>
+  <button class="show-error">Error</button>
+  <button class="show-warning">Warning</button>
+
+  <div class="toast-container">
+    <div class='0'>
+      <button>X</button>
+      <h2>Well done!! 0</h1>
+      <p>This is a succes alter</p>
+    </div>
+  </div>
+  <script>  </script>
+</body>
+</html>
