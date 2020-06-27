@@ -1,8 +1,8 @@
 let apiKey = 'api_key=250ed9163433644ad57f1350029b12e8';
-let lan = '&language=ko-kr'
+let lan = '&language=ko-kr';
 // --------------------------
 // 리스트
-let baseUri = 'http://api.themoviedb.org/3';  
+let baseUri = 'http://api.themoviedb.org/3';
 // ex : https://api.themoviedb.org/3/list/1?api_key=250ed9163433644ad57f1350029b12e8&language=ko-kr
 // list/${랜덤값}을 주면 랜덤으로 가져온다.
 // ---------------------------
@@ -22,17 +22,12 @@ let imagesUri = 'http://image.tmdb.org/t/p';
 // + width + imageURL
 // ex : https://image.tmdb.org/t/p/w500/jwswXltzpGaKZCtz1CiDjXHQYAs.jpg
 // ---------------------------
-// 
+//
 // 검색(영화)
 // https://developers.themoviedb.org/3/search/search-movies
 //
 // 검색(TV쇼)
 // https://developers.themoviedb.org/3/search/search-tv-shows
-
-
-
-
-
 
 let method = '/list/';
 let num = '2';
@@ -44,5 +39,3 @@ fetch(baseUri + method + num + '?' + apiKey + lan)
   .then(function (myJson) {
     console.dir(myJson);
   });
-
-
