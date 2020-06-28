@@ -19,34 +19,27 @@
     font-weight: 300;
     text-align: center;
   }
+
   .toast-container{
-    width: 35vw;
-    height: 90px;
-    background-color: aqua;
-    position: fixed;
-    bottom: 0;
-    right: 0;
-    padding: 20px;
-  }
-  .toast-container button{
-    border: 0;
-    background-color: rgba(0, 0, 0, 0);
     position: absolute;
     right: 0;
-    top: 0;
+    bottom: 0;
+    max-height: 100vh;
+    width: 30vw;
+    overflow: hidden;
   }
-  .toast-container h2{
-    padding: 0 0 20px 0;
-    margin: 0;
-    text-align: start;
+  .toast-container div{
+    background-color: #999;
+    width: 30vw;
+    position: relative;
+    right: -30vw;    
+    transition: all 1s;
   }
-  .toast-container p{
-    text-align: start;
-    font-size: 1.4rem;
-    padding: 0;
-    margin: 0;
+  .toast-container div.active{
+    right: 0vw;    
+    transition: all 1s;
   }
-  
+
   /* CSS 작성 바랍니다. */
   </style>
 </head>
@@ -58,12 +51,138 @@
   <button class="show-warning">Warning</button>
 
   <div class="toast-container">
-    <div class='0'>
-      <button>X</button>
-      <h2>Well done!! 0</h1>
-      <p>This is a succes alter</p>
-    </div>
   </div>
-  <script>  </script>
+  <script>
+    const showSuccess = document.querySelector('.show-success')
+    const showError = document.querySelector('.show-error')
+    const showWarning = document.querySelector('.show-warning')
+    const toastContainer = document.querySelector('.toast-container')
+
+    // state
+    let num = 0
+
+    // function
+    function render(toast){
+      let html = '';
+      html = `
+      <div id='${toast.id}'>
+        <button>X</button>
+        <h2>${toast.hedaer}</h1>
+        <p>${toast.content}</p>
+      </div>
+      `
+      toastContainer.innerHTML += html
+    }
+
+    function numId(){
+      return num++
+    }
+    function delElement(e){
+      toastContainer.removeChild(e.target.parentNode)
+    }
+    
+    // Event
+    function addSuccess(e){
+      const toast = {id: numId(), hedaer:'Well done!! 0' ,content:'This is a succes alter'}
+
+      const divElement = document.createElement('div')
+      divElement.id = toast.id
+
+      const delBtn = document.createElement('button')
+      delBtn.textContent = 'X'
+      delBtn.addEventListener('click', delElement)
+
+      const h2Element = document.createElement('h2')
+      h2Element.textContent = toast.hedaer
+
+      const pElement = document.createElement('p')
+      pElement.textContent = toast.content
+
+      divElement.appendChild(delBtn)
+      divElement.appendChild(h2Element)
+      divElement.appendChild(pElement)
+      toastContainer.appendChild(divElement)
+      setTimeout(() => {
+        divElement.classList.add('active')
+      }, 10)
+      setTimeout(() => {
+        divElement.classList.remove('active')
+        setTimeout(() =>{
+          if(document.getElementById(`${toast.id}`)) toastContainer.removeChild(divElement)
+        }, 1000)
+      }, 2000)
+    }
+
+    function addError(e){
+      let toast = {id: numId(), hedaer:'Check it out 1' ,content:'This is a error alter'}
+      
+      const divElement = document.createElement('div')
+      divElement.id = toast.id
+
+      const delBtn = document.createElement('button')
+      delBtn.textContent = 'X'
+      delBtn.addEventListener('click', delElement)
+
+      const h2Element = document.createElement('h2')
+      h2Element.textContent = toast.hedaer
+
+      const pElement = document.createElement('p')
+      pElement.textContent = toast.content
+
+      divElement.appendChild(delBtn)
+      divElement.appendChild(h2Element)
+      divElement.appendChild(pElement)
+      toastContainer.appendChild(divElement)
+      setTimeout(() => {
+        divElement.classList.add('active')
+      }, 10)
+      setTimeout(() => {
+        divElement.classList.remove('active')
+        setTimeout(() =>{
+          if(document.getElementById(`${toast.id}`)) toastContainer.removeChild(divElement)
+        }, 1000)
+      }, 2000)
+    }
+
+    function addWarning(e){
+      let toast = {id: numId(), hedaer:'Check it out 2' ,content:'This is a Warning alter'}
+      
+      const divElement = document.createElement('div')
+      divElement.id = toast.id
+
+      const delBtn = document.createElement('button')
+      delBtn.textContent = 'X'
+      delBtn.addEventListener('click', delElement)
+
+      const h2Element = document.createElement('h2')
+      h2Element.textContent = toast.hedaer
+
+      const pElement = document.createElement('p')
+      pElement.textContent = toast.content
+
+      divElement.appendChild(delBtn)
+      divElement.appendChild(h2Element)
+      divElement.appendChild(pElement)
+      toastContainer.appendChild(divElement)
+      setTimeout(() => {
+        divElement.classList.add('active')
+      }, 10)
+      setTimeout(() => {
+        divElement.classList.remove('active')
+        setTimeout(() =>{
+          if(document.getElementById(`${toast.id}`)) toastContainer.removeChild(divElement)
+        }, 1000)
+      }, 2000)
+    }
+
+    
+    // init
+    function init(){
+      showSuccess.addEventListener('click', addSuccess)
+      showError.addEventListener('click', addError)
+      showWarning.addEventListener('click', addWarning)
+    }
+    init()
+  </script>
 </body>
 </html>
