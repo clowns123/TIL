@@ -8,7 +8,7 @@
 
 ## 1. [변수](./javascript/변수.md)
 
-## ## 2. 2. [데이터타입](./javascript/데이터 타입.md)
+## 2. [데이터 타입](./javascript/데이터 타입.md)
 
 ## 3. [함수](./javascript/함수.md)
 
