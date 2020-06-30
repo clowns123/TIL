@@ -14,9 +14,7 @@ app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.get('/', (req, res) =>
-  res.send(`<h1>${req.protocol}://${req.get('host')}${req.originalUrl}</h1>`)
-);
+app.get('/', (req, res) => res.send(`<h1>${req.protocol}://${req.get('host')}${req.originalUrl}</h1>`));
 
 app.get('/todos', (req, res) => {
   console.log('[GET]');
@@ -27,7 +25,7 @@ app.get('/todos/:id', (req, res) => {
   const { id } = req.params;
   console.log('[GET] req.params.id => ', req.params.id);
 
-  res.send(todos.filter((todo) => todo.id === +id));
+  res.send(todos.filter(todo => todo.id === +id));
 });
 
 app.post('/todos', (req, res) => {
@@ -42,14 +40,14 @@ app.delete('/todos/:id([0-9]+)', (req, res) => {
   const { id } = req.params;
   console.log('[DELETE] req.params.id => ', req.params.id);
 
-  todos = todos.filter((todo) => todo.id !== +id);
+  todos = todos.filter(todo => todo.id !== +id);
   res.send(todos);
 });
 
 app.delete('/todos/completed', (req, res) => {
   console.log('[DELETE] completed');
 
-  todos = todos.filter((todo) => !todo.completed);
+  todos = todos.filter(todo => !todo.completed);
   res.send(todos);
 });
 
@@ -60,9 +58,7 @@ app.patch('/todos/:id', (req, res) => {
   const { completed } = req.body;
   console.log('[PATCH] req.body => ', completed);
 
-  todos = todos.map((todo) =>
-    todo.id === +id ? { ...todo, completed: !todo.completed } : todo
-  );
+  todos = todos.map(todo => (todo.id === +id ? { ...todo, completed: !todo.completed } : todo));
   res.send(todos);
 });
 
@@ -72,10 +68,8 @@ app.patch('/todos', (req, res) => {
   const { completed } = req.body;
   console.log('[PATCH] req.body => ', completed);
 
-  todos = todos.map((todo) => ({ ...todo, completed }));
+  todos = todos.map(todo => ({ ...todo, completed }));
   res.send(todos);
 });
 
-app.listen(9000, () =>
-  console.log('Simple Rest API Server listening on port 9000')
-);
+app.listen(9000, () => console.log('Simple Rest API Server listening on port 9000'));

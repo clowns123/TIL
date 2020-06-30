@@ -27,30 +27,27 @@ const getTodos = () => {
 };
 
 // Event Function
-const getTodoId = () =>
-  todos.length ? Math.max(...todos.map((todo) => todo.id)) + 1 : 1;
+const getTodoId = () => (todos.length ? Math.max(...todos.map(todo => todo.id)) + 1 : 1);
 
-const addTodo = (text) => {
-  let todo = { id: getTodoId(), content: text, completed: false };
+const addTodo = text => {
+  const todo = { id: getTodoId(), content: text, completed: false };
   todos = [todo, ...todos];
 };
-const toggleTodo = (id) => {
-  todos = todos.map((todo) =>
-    todo.id === +id ? { ...todo, completed: !todo.completed } : { ...todo }
-  );
+const toggleTodo = id => {
+  todos = todos.map(todo => (todo.id === +id ? { ...todo, completed: !todo.completed } : { ...todo }));
 };
 
-const delTodo = (id) => {
-  todos = todos.filter((todo) => todo.id !== +id);
+const delTodo = id => {
+  todos = todos.filter(todo => todo.id !== +id);
   console.log(todos);
 };
 
-const toggleAllTodo = (checked) => {
-  todos = todos.map((todo) => ({ ...todo, completed: checked }));
+const toggleAllTodo = checked => {
+  todos = todos.map(todo => ({ ...todo, completed: checked }));
 };
 
 const completedDelTodos = () => {
-  todos = todos.filter((todo) => !todo.completed);
+  todos = todos.filter(todo => !todo.completed);
   console.log(todos);
 };
 
@@ -68,36 +65,30 @@ const render = () => {
   if (navState === 'all') {
     $changeTodos = todos;
   } else if (navState === 'active') {
-    $changeTodos = todos.filter((todo) => !todo.completed);
+    $changeTodos = todos.filter(todo => !todo.completed);
   } else if (navState === 'completed') {
-    $changeTodos = todos.filter((todo) => todo.completed);
+    $changeTodos = todos.filter(todo => todo.completed);
   }
 
   $changeTodos.map(({ id, content, completed }) => {
     html += `
       <li id="${id}" class="todo-item">
-        <input id="ck-${id}" class="checkbox" type="checkbox" ${
-      completed ? 'checked' : ''
-    }>
+        <input id="ck-${id}" class="checkbox" type="checkbox" ${completed ? 'checked' : ''}>
         <label for="ck-${id}">${content}</label>
         <i class="remove-todo far fa-times-circle"></i>
       </li>
       `;
   });
 
-  $completedTodos.textContent = todos.filter(
-    (todo) => todo.completed !== false
-  ).length;
-  $activeTodos.textContent = todos.filter(
-    (todo) => todo.completed === false
-  ).length;
+  $completedTodos.textContent = todos.filter(todo => todo.completed !== false).length;
+  $activeTodos.textContent = todos.filter(todo => todo.completed === false).length;
 
   $todos.innerHTML = html;
 };
 
 // Event
-const changeavState = (id) => {
-  [...$nav.children].forEach(($navItem) => {
+const changeavState = id => {
+  [...$nav.children].forEach($navItem => {
     $navItem.classList.toggle('active', $navItem.id === id);
   });
   navState = id;
@@ -114,30 +105,30 @@ $nav.onclick = ({ target }) => {
   render();
 };
 
-$inputTodo.onkeypress = (e) => {
+$inputTodo.onkeypress = e => {
   if (e.keyCode !== 13) return;
   addTodo(e.target.value);
   e.target.value = '';
   render();
 };
 
-$todos.onchange = (e) => {
+$todos.onchange = e => {
   toggleTodo(e.target.parentNode.id);
   render();
 };
 
-$todos.onclick = (e) => {
+$todos.onclick = e => {
   if (!e.target.matches('i')) return;
   delTodo(e.target.parentNode.id);
   render();
 };
 
-$completeAll.onchange = (e) => {
+$completeAll.onchange = e => {
   toggleAllTodo(e.target.checked);
   render();
 };
 
-$btn.onclick = (e) => {
+$btn.onclick = e => {
   completedDelTodos();
   render();
 };
