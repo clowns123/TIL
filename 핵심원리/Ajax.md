@@ -2,6 +2,8 @@
 
 Ajax(Asynchronous JavaScript and XML)란 자바스크립트를 사용하여 브라우저가 서버에게 비동기(asynchronous) 방식으로 데이터를 요청(request)하고, 서버가 응답(response)한 데이터를 수신하여 웹페이지를 동적으로 갱신하는 프로그래밍 방식을 말한다. Ajax는Web API인 XMLHttpRequest 객체를 기반으로 동작한다. XMLHttpRequest는 HTTP 비동기 통신을 위한 메서드와 프로퍼티를 제공한다.
 
+즉 Ajax는 XMLHttpRequest 객체를 이용하여 구현한 자바스크립트의 비동기 통신 라이브러리입니다.
+
 이떄 JSON을 통해 클라이언트와 서버 간의 HTTP 통신을 한다.
 
 # 전통적인 웹 페이지 렌더링

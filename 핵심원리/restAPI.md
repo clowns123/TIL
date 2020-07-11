@@ -18,3 +18,30 @@ REST API는 자원(Resource), 행위(Verb), 표현(Representations)의 3가지 �
 
 ## 2.1 URL는 리소스를 표현해야 한다.
 
+리소스를 식별할 수 있는 이름은 동사보다는 명사를 사용한다.
+
+```code
+# bad
+GET /getTodos/1
+GET /todos/show/1
+
+# good
+GET /todos/1
+```
+
+
+
+## 2.1 리소스에 대한 행위는 HTTP 요청 메서드로 표현한다.
+
+리소스를 취득하는 경우에는 GET, 리소스를 삭제하는 경우에는 DELETE 메서드를 사용하여 리소스에 대한 행위를 명확히 표현한다.
+
+리소스에 대한 행위는 GET, POST, PUT, PATCH, DELETE와 같은 HTTP 요청 메서드를 통해 표현하며 URI에 표현하지 않는다.
+
+```code
+# bad
+GET /todos/delete/1
+
+# good
+DELETE /todos/1
+```
+
