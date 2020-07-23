@@ -9,7 +9,7 @@ function readTestFile(fileName) {
     return s
       .slice(1, s.length - 1)
       .split(',')
-      .map(el => parseInt(el));
+      .map(el => el);
   }
   function parseScalars(s) {
     return s.split(' ').map(el => parseInt(el));
@@ -20,8 +20,9 @@ function readTestFile(fileName) {
   return [parsedInput];
 }
 
-function solution(s = '') {
+function solution(s) {
   let answer = '';
+  s = s.join();
   const count = s.length;
   const half = count / 2;
   if (count % 2 === 0) {
@@ -43,6 +44,7 @@ fs.readdir(pathDir, (err, files) => {
     console.log('Test Ouput:');
 
     const parsedInputs = readTestFile(path.join(pathDir, file));
+
     const tStart = new Date().getTime();
     const answer = solution(...parsedInputs);
     console.log('답 : ', answer);

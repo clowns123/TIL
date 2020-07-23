@@ -20,14 +20,15 @@ function readTestFile(fileName) {
   return [parsedInput];
 }
 
-function solution(s = '') {
+function solution(n = 0) {
   let answer = '';
-  const count = s.length;
-  const half = count / 2;
-  if (count % 2 === 0) {
-    answer = s.slice(half - 1, half + 1);
-  } else {
-    answer = s.slice(half, half + 1);
+  console.log(n);
+  const a = parseInt(n / 2);
+  for (let i = 0; i < a; i++) {
+    answer += '수박';
+  }
+  if (n % 2 === 1) {
+    answer += '수';
   }
   return answer;
 }
@@ -37,12 +38,12 @@ fs.readdir(pathDir, (err, files) => {
     if (file.split('.')[1] !== 'txt') {
       return;
     }
-
     console.log(`Testing ${file}...`);
     console.log('====================================');
     console.log('Test Ouput:');
 
     const parsedInputs = readTestFile(path.join(pathDir, file));
+
     const tStart = new Date().getTime();
     const answer = solution(...parsedInputs);
     console.log('답 : ', answer);
