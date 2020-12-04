@@ -562,8 +562,10 @@ methods: {
 </body>
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <script>
-    const eventBus = new Vue();
+    const eventBus = new Vue();	// 1. 이벤트 버스로 사용할 새 인스턴스
+    
     Vue.component('child-component', {
+        // 2. 하위 컴포넌트로 template와 methods를 정의한다.
         template: '<div>하위 컴포넌트 영영. <button v-on:click="showLog">show</button></div>',
         methods: {
             showLog: function () {
@@ -575,6 +577,7 @@ methods: {
     const app = new Vue({
         el: '#app',
         created() {
+            // 3. 상위 컴포넌트에서 이벤트버스에 이벤트 받는 로직을 선언합니다.
             eventBus.$on('triggerEventBus', function (value) {
                 console.log(`이벤트를 전달받음, 전달받은 값 : ${value}`);
             });
@@ -582,4 +585,406 @@ methods: {
     });
 </script>
 ```
+
+위의 예제를 실행 후 버튼을 클릭하면 콘솔창에 `이벤트를 전달받음, 전달받은 값 : 100`라 콘솔이 뜹니다.
+
+> **이벤트 버스의 문제점**
+>
+> 이벤트 버스를 사용하면 데이터를 어디든지 전달할 수 있어 편하지만 어디서 어디로 보내는지 관리가 되지 않는 문제점이 발생합니다.
+>
+> 이 문제점을 해결하기 위해 vuex라는 상태 관리 도구를 사용합니다. react를 공부해봤다면 redux와 비슷한 라이브러리입니다.
+
+
+
+# 5. 뷰 라우터
+
+## 5.1 라우팅이란?
+
+라우팅은 SPA를 구현하기 위해 주로 사용됩니다. SPA에서 가장 중요한 것은 리플래쉬가 일어나지 않아 UI를 쉽게 하기 위함인데 이때 페이지를 이동할때는 라우팅이라는 **페이지 이동방식**을 이용하는 것 입니다. 
+
+라우팅방법은 뷰뿐만 아니라 SPA프레임워크인 리액트 앵귤러도 모두 사용합니다.
+
+## 5.2 뷰 라우터
+
+뷰 라우터는 뷰에서 라우팅 기능을 구현할 수 있도록 지원하는 공식 라이브러리입니다.
+
+| 태그                      | 설명                                                         |
+| ------------------------- | ------------------------------------------------------------ |
+| <router-link to="URL 값"> | 페이지 이동태그. <a>로 표시되며 클릭하면 URL로 이동합니다.   |
+| <router-view>             | 페이지 표시 태그. URL에 따라 해당 컴포넌트를 뿌려주는 영역입니다. |
+
+위의 태그를 이용하여 간단한 예제를 작성해봅시다.
+
+```html
+<body>
+    <div id="app">
+        <h1>뷰 라우터 예제</h1>
+        <p>
+            <router-link to="main">main 컴포넌트로 이동</router-link>
+            <router-link to="login">login 컴포넌트로 이동</router-link>
+        </p>
+    </div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<!-- 뷰 라우터 MDN -->
+<script src="https://unpkg.com/vue-router@3.0.1/dist/vue-router.js"></script>
+<script>
+    // 컴포넌트
+    const Main = { template: '<div>Main</div>' };
+    const Login = { template: '<div>Login</div>' };
+	
+    // 라우터 path, component 연결
+    const routers = [
+        { path: '/main', component: Main },
+        { path: '/login', component: Login },
+    ];
+	
+    // 라우터 활성화
+    const router = new VueRouter({
+        routers,
+    });
+	
+    // 인스턴스에 라우터 추가
+    const app = new Vue({
+        router,
+    }).$mount('#app');
+</script>
+```
+
+> **$mount() API란?**
+>
+> $mount()는 el속성과 동일하게 인스턴스를 화면에 붙이는 역할을 합니다. 인스턴스를 생성할 때 el속성을 넣지 않았더라도 생성하고 나서 $mount()를 이용하면 강제로 인스턴스를 화면에 붙일 수가 있습니다.
+
+> **라우터 URL의 해시 값(#)을 없애는 방식**
+>
+> 위의 예제를 실행하면 uri/startVue.html#/login 처럼 라우터 앞에 #가 붙게 되는데 이를 해결하기 위해서는  아래 예제처럼
+>
+> ```js
+> const router = new VueRouter({
+>     routers,
+>     mode: 'history'
+> });
+> ```
+>
+> 모드 히스토리를 해줘야 합니다.
+
+## 5.3 네스티드 라우터
+
+네스티드 라우터는 라우터로 페이지를 이동할 때 최소 2개 이상의 컴포넌트를 화면에 나타낼 수 있습니다. 이때 상위 컴포넌트 1개 하위 컴포넌트 1개를 포함하는 구조입니다. 아래의 예제를 살펴봅시다.
+
+```html
+  <body>
+    <div id="app">
+      <router-view></router-view>
+    </div>
+  </body>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://unpkg.com/vue-router@3.0.1/dist/vue-router.js"></script>
+  <script>
+    // 컴포넌트 내용 정의
+    // 상위 컴포넌트
+    const User = {
+      template: `
+        <div>
+          User Component
+          <router-view></router-view>
+        </div>
+      `,
+    };
+    // 하위 컴포넌트
+    const UserProfile = { template: `<p>User Profile Component</p>` };
+    const UserPost = { template: `<p>User Post Component</p>` };
+
+    // 네스티드 라우팅 정의
+    const routes = [
+      {
+        path: '/user',
+        component: User,
+        children: [
+          { path: 'posts', component: UserPost },
+          {
+            path: 'profile',
+            component: UserProfile,
+          },
+        ],
+      },
+    ];
+
+    // 뷰 라우터 정의
+    const router = new VueRouter({
+      routes,
+    });
+
+    // 뷰 인스턴스에 라우터 추가
+    const app = new Vue({
+      router,
+    }).$mount('#app');
+  </script>
+```
+
+네스티드 라우터와 기본 라우터의 차이점은 최상위 컴포넌트에도 <router-view>가 있고 상위 컴포넌트에도 <router-view>가 있다는 점 입니다.
+
+이떄 url 뒤에 posts와 profile가 잘 뜨는지 확인합니다.
+
+## 5.4 네이드 뷰
+
+네임드 뷰는 특정 페이지로 이동했을 때 여러개의 컴포넌트를 동시에 표시하는 라우터 방식입니다.
+
+기본 뷰와 네스티드 라우터 뷰는 최상위 컴포넌트는 1개 뿐이었지만 네임드 뷰는 최상위 컴포넌트 여러개를 한번에 표시합니다. 아래의 예제를 보면서 알아봅시다.
+
+```html
+  <body>
+    <div id="app">
+      <router-view name="header"></router-view>
+      <router-view></router-view>
+      <router-view name="footer"></router-view>
+    </div>
+  </body>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://unpkg.com/vue-router@3.0.1/dist/vue-router.js"></script>
+  <script>
+    const Body = { template: '<div>This is Body</div>' };
+    const Header = { template: '<div>This is Header</div>' };
+    const Footer = { template: '<div>This is Footer</div>' };
+
+    const router = new VueRouter({
+      routes: [
+        {
+          path: '/',
+          components: {
+            default: Body,
+            header: Header,
+            footer: Footer,
+          },
+        },
+      ],
+    });
+
+    const app = new Vue({
+      router,
+    }).$mount('#app');
+  </script>
+```
+
+총 3개의 컴포넌트를 만든 뒤 router(한개의 라우터)에 components를 3개를 넣어서 상위 컴포넌트인 인스턴스에 라우터 설정을 해줍니다.
+
+> **<router-view>의 name이란?**
+>
+> name 속성은 예약어가 아니라 상용자가 임의로 정의한 것 입니다. 만약 사용하지 않으면 기본값인 default로 설정이 됩니다.
+
+
+
+# 6. 뷰 HTTP 통신
+
+## 6.1 웹 앱의 HTTP 통신 방법
+
+요즘 웹 앱에서 서버에 데이터를 요청하는 HTTP 통신은 필수로 구현해야 합니다. 최근 웹 사이트는 다양한 데이터를 동적으로 데이터를 화면에 표시 해야하기 때문에 더 중요해졌습니다.
+
+예전 HTTP 통신의 대표적인 사례로는 제이쿼리의 ajax가 있습니다. ajax는 서버에서 받아온 데이터를 표시할 때 화면 전체를 갱신하지 않고도 화면의 일부분만 변경할 수 있게 하는 자바스크립트 기법입니다. ajax는 제이쿼리 뿐만 아니라 리액트, 앵귤러 뷰 등에도 활발히 사용합니다.
+
+뷰에서는 ajax를 지원하기 위한 라이브러리를 제공하고 axios를 많이 사용합니다.
+
+## 6.2 뷰 리소스
+
+뷰 리소스는 초기에는 공식적으로 권하는 라이브러리였지만 2016 말에는 공식적인 지원을 중단했습니다. 잘 사용하지 않으므로 저는 그냥 넘어가겠습니다.
+
+## 6.3 엑시오스
+
+엑시오스는 현재 뷰 커뮤니티에서 가장 많이 사용되는 HTTP 통신 라이브러리입니다. 뷰 뿐만 아니라 다양한 곳에서 많이 사용하고 Promise 기반의 API 형식이 다양하게 제공되어 별도의 로직을 구현할 필요 없이 API로 간편하게 원하는 로직을 구현할 수 있습니다.
+
+
+
+
+
+# 7. 뷰 템플릿
+
+## 7.1 뷰 템플릿이란?
+
+뷰의 템플릿은 HTML, CSS 등의 마크업 속성과 뷰 인스턴스에서 정의한 데이터 및 로직들을 연결하여 사용자가 브라우저에서 볼 수 있는 형태의 HTML로 변환해 주는 속성입니다.
+
+템플릿 속성을 사용하는 방법은 두 가지로, 첫 번째는 ES5에서 뷰 인스턴스의 template 속성을 활용하는 방법입니다.
+
+두 번째는 싱글 파일 컴포넌트 체계의 <template> 코드를 활용하는 방법입니다.
+
+
+
+## 7.2 데이터 바인딩
+
+데이터 바인딩은 HTML 화면 요소를 뷰 인스턴스의 데이터와 연결하는 것을 의미합니다.
+
+주요 문법으로는  {{}} 문법과 v-bind 속성이 있습니다.
+
+- {{}} : 콧수염 괄호
+
+  - 기본적인 텍스트 삽입 방식으로 뷰 인스턴스의 data를 가져다가 html에서 사용하기 위해서 사용합니다.
+  - 만약 뷰 데이터가 변경되어도 값을 바꾸고 싶지 않다면 **v-once** 속성을 사용합니다.
+  - {{}}를 사용할 때 자바스크립트 표현식을 사용해서 원하는 형태로 변환할 수 있습니다.
+    - 단 선언문, 분기 구문은 사용할 수 없습니다.
+
+- v-bind
+
+  - v-bind는 아이디, 클래스, 스타일 등의 HTML 속성 값에 뷰 데이터 값을 연결할 때 사용하는 데이터 연결 방식입니다.
+
+  - ```html
+    <div id="app">
+        <p v-bind:id="idA">아이디 바인딩</p>
+        <p v-bind:class="classA">클래스 바인딩</p>
+        <p v-bind:style="styleA">스타일 바인딩</p>
+    </div>
+    ...
+    <script>
+    	new Vue({
+            el: '#app',
+            data: {
+                idA: 10,
+                classA: 'container',
+                styleA: 'color: blue'
+            }
+        })
+    </script>
+    ```
+
+## 7.3 디렉티브
+
+뷰 디렉티브란 HTML 태그 안에 v- 접두사를 가지는 모든 속성들을 의미합니다. 앞에서 배운 v-bind 속성도 디렉티브에 해당됩니다. 디렉티브 형식은 아래와 같습니다.
+
+`<a v-if="flag">두잇 뷰</a>`
+
+위 a태그는 flag값에 따라 보이기도 하고 안 보이기도 합니다. 주요 디렉티브를 살펴봅시다.
+
+| 디렉티브 | 역할                                                         |
+| -------- | ------------------------------------------------------------ |
+| v-if     | 지정한 뷰 데이터 값의 참, 거짓 여부에 따라 해당 HTML 태그를 화면에 표시하거나 표시하지 않습니다. |
+| v-for    | 지정한 뷰 데이터의 개수만큼 해당 HTML 태그를 반복 출력합니다. |
+| v-show   | v-if와 유사하게 데이터 진위 여부에 따라 HTML을 표시하거나 표시하지 않습니다. 다만 v-if는 해당 태그를 완전히 삭제하지만 v-show는 css효과 display:none로 주어 실제 태그는 남아있습니다. |
+| v-bind   | HTML 태그의 기본 속성과 뷰 데이터 속성을 연결합니다.         |
+| v-on     | 화면 요소의 이벤트를 감지하여 처리할 때 사용합니다. 예를 들어 v-on:click은 해당 태그의 클릭 이벤트를 감지하여 특정 메서드를 실행할 수 있습니다. |
+| v-model  | 폼에서 주로 사용됩니다. 폼에 입력한 값을 뷰 인스턴스의 데이터와 즉시 동기화합니다. <input>, <select>, <textarea> 태그에만 사용할 수 있습니다. |
+
+
+
+## 7.4 이벤트 처리
+
+웹 앱에서는 사용자의 클릭이나 키보드 입력과 같은 이벤트를 많이 처리하게 됩니다. 뷰 또한 이러한 이벤트를 처리하기 위해 v-on 디렉티브나 methods 속성을 활용합니다.
+
+```html
+...
+<button v-on:click="clickBtn">
+    클릭
+</button>
+...
+<script>
+	methods: {
+        clickBtn: function(){
+            alert('clicked');
+        }
+    }
+</script>
+```
+
+위 코드는 버튼 태그에 v-on디렉티브를 추가하여 클릭 이벤트를 받게 했습니다. 이런 디렉티브를 처리할 때 인자 값을 받아서 넘기는 방법도 있습니다.
+
+```html
+...
+<button v-on:click="clickBtn(10)">
+    클릭
+</button>
+...
+<script>
+	methods: {
+        clickBtn: function(num){
+            alert(`clicked${num}`);
+        }
+    }
+</script>
+```
+
+이제 클릭하여 경고창을 확인해보면 clicked10을 확인할 수 있습니다. 이번에는 event 인자를 이용해 화면 요소의 돔 이벤트에 접근해보겠습니다.
+
+```html
+...
+<button v-on:click="clickBtn">
+    클릭
+</button>
+...
+<script>
+	methods: {
+        clickBtn: function(event){
+            console.log(event)
+        }
+    }
+</script>
+```
+
+따로 evnet를 인자로 전달해주지 않아도 event인자를 정의해 주는것만으로도 이벤트 객체에 접근할 수 있습니다.
+
+
+
+## 7.5 고급 템플릿 기법
+
+위의 기법들과 더해 실제 애플리케이션을 개발할 때 유용한 속성들을 배워봅시다.
+
+**computed 속성**
+
+데이터를 가공하는 등의 복잡한 연산은 뷰 인스턴스 안에서 하고 최종적으로 HTML에는 데이터를 표현만 해야 한다고 설명했습니다. computed 속성은 이러한 데이터 연산들을 정의하는 영역입니다.
+
+```html
+...
+<div id="app">
+    <p>{{ reversedMessage }}</p>
+</div>
+...
+<script>
+	new Vue({
+        el: '#app',
+        data:{
+            message: 'Hello Vue!!'
+        },
+        computed: {
+            reversedMessage: function(){
+                return this.message.split('').reverse().join('');
+            }
+        }
+    })
+</script>
+```
+
+HTML에서 바로 message.split('').reverse().join('')라 해도 되지만 computed를 사용하면 좀 더 깔끔한 코드가 됩니다.
+
+computed 속성의 장점으로는 data 속성 값의 변화에 따라 자동으로 다시 연산한다는 점입니다. 이때 computed 속성의 reversedMessage()가 미리 연산한 결과를 가지고 있다가 화면에 결과만 표시합니다. 그렇기 때문에 여러곳에서 재사용할 때 빠른 결과를 가지고 옵니다.
+
+> **methods와 computed의 차이점**
+>
+> methods 속성은 호출할 때만 해당 로직이 수행되고 compuned 속성은 데이터의 값이 변경되면 자동적으로 수행된다는 것입니다.
+>
+> 즉 수동적이냐 능동적이냐의 차이점입니다.
+
+**watch 속성**
+
+watch 속성은 데이터 변화를 감지하여 자동으로 특정 로직을 수행합니다.
+
+computed 속성과 유사하지만 computed 속성은 내장 API를 활용한 간단한 연산 정도만 적합한 반면 watch 속성은 데이터 호출과 같이 시간이 상대적으로 더 많이 소모되는 비동기 처리에 적합합니다.
+
+```html
+...
+<div>
+    <input v-model="message"/>
+</div>
+...
+<script>
+	new Vue({
+        el: "#app",
+        data: {
+            message: "Hello Vue.js!"
+        },
+        watch: {
+            message: function(data){
+                console.log("message의 값이 바뀝니다. : ", data)
+            }
+        }
+    })
+</script>
+```
+
+위 코드를 간단히 살펴보면 v-model로 인풋박스의 값이 변화가 있을 때 마다 watch 속성의 message 메서드가 실행됩니다.
 

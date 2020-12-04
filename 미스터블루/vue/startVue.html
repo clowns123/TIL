@@ -3,33 +3,46 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Vue</title>
   </head>
 
   <body>
     <div id="app">
-      <child-component></child-component>
+      <router-view name="header"></router-view>
+      <router-view></router-view>
+      <router-view name="footer"></router-view>
     </div>
   </body>
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://unpkg.com/vue-router@3.0.1/dist/vue-router.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <script>
-    const eventBus = new Vue();
-    Vue.component('child-component', {
-      template: '<div>하위 컴포넌트 영영. <button v-on:click="showLog">show</button></div>',
-      methods: {
-        showLog: function () {
-          eventBus.$emit('triggerEventBus', 100);
+    const Body = { template: '<div>This is Body</div>' };
+    const Header = { template: '<div>This is Header</div>' };
+    const Footer = { template: '<div>This is Footer</div>' };
+    const Login = { template: '<div>This is Login</div>' };
+
+    const router = new VueRouter({
+      routes: [
+        {
+          path: '/',
+          components: {
+            default: Body,
+            header: Header,
+            footer: Footer,
+          },
         },
-      },
+        {
+          path: '/login',
+          components: {
+            default: Login,
+          },
+        },
+      ],
     });
 
     const app = new Vue({
-      el: '#app',
-      created() {
-        eventBus.$on('triggerEventBus', function (value) {
-          console.log(`이벤트를 전달받음, 전달받은 값 : ${value}`);
-        });
-      },
-    });
+      router,
+    }).$mount('#app');
   </script>
 </html>
