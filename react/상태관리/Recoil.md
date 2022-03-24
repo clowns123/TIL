@@ -193,3 +193,138 @@ function FontButton() {
 버튼을 클릭하면 atoms인 fontsize의 값으로 fontsize가 설정이 되고
 
 fontSizeLabel의 return값이 div에 문구가 출력이 됩니다.
+
+
+
+
+
+# 4. Recoil 시작하기
+
+Recoil은 React를 위한 상태관리 라이브러리이기 때문에 React에서만 사용이 가능합니다.
+
+
+
+## 4.1 라이브러리 설치
+
+```shell
+npm install recoil
+# OR
+yarn add recoil
+```
+
+
+
+## 4.2 RecoilRoot
+
+Recoil도 다른 상태관리 라이브러리와 비슷하게 부모 트리 어딘가에 RecoilRoot가 필요합니다.
+
+보통은 App.jsx에 많이 넣습니다.
+
+```react
+import React from 'react';
+import { RecoilRoot } from 'recoil';
+
+function App() {
+  return (
+    <RecoilRoot>
+      <CharacterCounter />
+    </RecoilRoot>
+  );
+}
+```
+
+
+
+## 4.3 상태
+
+위에서 배운 **Atoms**와 **Selector**을 사용하여 상태를 관리하고 변경을 해주면 됩니다.
+
+
+
+# 5. 비동기 데이터 쿼리
+
+Recoil의 장점 중 하나는 비동기 처리를 Selector에서 바로 처리가 가능합니다.
+
+예시를 알아보겠습니다.
+
+
+
+## 5.1 동기 예제
+
+```react
+const currentUserIDState = atom({
+  key: 'CurrentUserID',
+  default: 1,
+});
+
+const currentUserNameState = selector({
+  key: 'CurrentUserName',
+  get: ({get}) => {
+    return tableOfUsers[get(currentUserIDState)].name;
+  },
+});
+
+function CurrentUserInfo() {
+  const userName = useRecoilValue(currentUserNameState);
+  return <div>{userName}</div>;
+}
+
+function MyApp() {
+  return (
+    <RecoilRoot>
+      <CurrentUserInfo />
+    </RecoilRoot>
+  );
+}
+```
+
+위의 예제를 살펴보면 atom과 selector 모두 로컬에서 동기적으로 동작하고 있습니다.
+
+하지만 데이터베이스에 username이 존재한다면 어떻게 해야할까요??
+
+
+
+## 5.2 비동기 예제
+
+ ```react
+ const currentUserNameQuery = selector({
+   key: 'CurrentUserName',
+   get: async ({get}) => {
+     const response = await myDBQuery({
+       userID: get(currentUserIDState),
+     });
+     return response.name;
+   },
+ });
+ 
+ function CurrentUserInfo() {
+   const userName = useRecoilValue(currentUserNameQuery);
+   return <div>{userName}</div>;
+ }
+ ```
+
+그냥 selector에서 바로 async await를 사용하여 DB에서 값을 가지고 올 수 있습니다.
+
+Selector의 인터페이스는 동일하므로 컴포넌트에서는 selector를 사용하면서 동기 atom 상태나 파생된 selector 상태, 혹은 비동기 쿼리를 지원하는지 신경쓰지 않아도 괜찮습니다! 또한 따로 미들웨어나 SWR, react-query를 사용하지 않아도 되죠
+
+
+
+하지만 로딩 중 다양한 처리를 하고 싶을 땐 어떻게 처리를 해야할까요??
+
+그 방법은 아래 예제를 보겠습니다.
+
+```react
+function MyApp() {
+  return (
+    <RecoilRoot>
+      <React.Suspense fallback={<div>Loading...</div>}>
+        <CurrentUserInfo />
+      </React.Suspense>
+    </RecoilRoot>
+  );
+}
+```
+
+ [React Suspense](https://reactjs.org/docs/concurrent-mode-suspense.html)는 보류중인 데이터를 다루기 위해 있습니다.
+
+아직 불러오지 못한 데이터의 경우 Suspense로 감싸서 처리를 해줄 수 있습니다.
