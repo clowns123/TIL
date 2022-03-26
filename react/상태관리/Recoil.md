@@ -328,3 +328,66 @@ function MyApp() {
  [React Suspense](https://reactjs.org/docs/concurrent-mode-suspense.html)는 보류중인 데이터를 다루기 위해 있습니다.
 
 아직 불러오지 못한 데이터의 경우 Suspense로 감싸서 처리를 해줄 수 있습니다.
+
+
+
+
+
+# 6. 레퍼런스 API
+
+RecoilRoot는 여러개가 존재할 수 없고 보통은 최상단 컴포넌트를 감싼다.
+
+## 6.1 atom(options)
+
+위에서 봤듯이 Recoil의 상태를 표현합니다. atom() 함수의 경우 쓰기 가능한 RecoilState 객체를 반환합니다.
+
+options의 종류
+
+- key : 내부적으로 atom을 구분하는데 사용되는 고유한 문자열
+- default : atom의 초기값 또는 promise 또는 동일한 타입의 값을 나타내는 다른 atom이나 selector
+- effects_UNSTABLE: atom을 위한 선택적인 [Atom Effects](https://recoiljs.org/ko/docs/guides/atom-effects) 배열
+- dangerouslyAllowMutability: 
+  1. Recoil은 atom을 이용해 다시 렌더링 되는 컴포넌트에 언제 알려야 할지 알기 위해 atom의 상태 변화에 의존합니다.
+  2. 만약 atom의 값이 변경될 경우 이를 거치지 않고 등록된 컴포넌트에 제대로 알리지 않고 상태가 변경될 수 있습니다.
+  3. 이를 방지하고자 저장된 모든 값이 변경되지 않습니다.
+  4. 즉 atom을 변경했는데 컴포넌트가 리렌더링되지 않으면 이 옵션을 사용합시다.
+
+
+
+atom은 `Promise`나 `RecoilValues`를 직접 저장하는 데 사용할 수 없지만 객체를 감쌀 수도 있다. `Promises`은 변경될 수 있다는 점에 유의해야 한다. Atom은 `function`로 설정할 수 있지만, 함수가 순수하다면, 그러기 위해서는 setter형태의 updater를 사용해야 할 수도 있다. (예: `set(myAtom, () => myFunc);`).
+
+
+
+예시를 봅시다.
+
+```react
+import {atom, useRecoilState} from 'recoil';
+
+const counter = atom({
+  key: 'myCounter',
+  default: 0,
+});
+
+function Counter() {
+  const [count, setCount] = useRecoilState(counter);
+  const incrementByOne = () => setCount(count + 1);
+
+  return (
+    <div>
+      Count: {count}
+      <br />
+      <button onClick={incrementByOne}>Increment</button>
+    </div>
+  );
+}
+```
+
+
+
+## 6.2 selector(options)
+
+Selector은 Recoil에서 함수나 파생된 상태를 나타냅니다. 즉 selector은 [순수함수](https://velog.io/@nittre/JavaScriptFunction-Composition-Series-1.-Pure-Function)라 생각하면 됩니다.
+
+get 함수만 제공하면 `RecoilValueReadOnly` 객체를 반환하고
+
+set 함수도 제공하면 `RecoilState` 객체를 반환합니다.
